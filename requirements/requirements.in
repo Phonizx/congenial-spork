@@ -1,0 +1,6 @@
+pydantic
+fastapi
+uvicorn[standard]
+celery[redis]
+motor
+pydantic-settings
