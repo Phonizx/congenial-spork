@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings  # NEW
 class Settings(BaseSettings):
     PROJECT_NAME: str
     BACKEND_CORS_ORIGINS: List[HttpUrl] = []
+    MONGODB_CONNECTION_STRING : str
 
     class Config:
         case_sensitive = True

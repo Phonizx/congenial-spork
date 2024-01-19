@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import echo_router
+from app.api import pilot_router
 from app.settings import settings
 
 
@@ -19,4 +19,4 @@ def get_application():
 
 
 app = get_application()
-app.include_router(echo_router)
+app.include_router(pilot_router)

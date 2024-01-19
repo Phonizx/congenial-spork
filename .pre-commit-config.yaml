@@ -29,6 +29,7 @@ repos:
         entry: mypy
         language: system
         types: [python]
+        args: ["--explicit-package-bases"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.3.0
     hooks:
