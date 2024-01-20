@@ -3,7 +3,8 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 import motor.motor_asyncio
 from bson import ObjectId
-from settings import settings
+
+from app.settings import settings
 
 ModelType = TypeVar("ModelType")
 

@@ -4,3 +4,5 @@ uvicorn[standard]
 celery[redis]
 motor
 pydantic-settings
+pytest
+bson
