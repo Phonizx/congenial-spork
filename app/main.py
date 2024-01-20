@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import pilot_router
+from app.api import jobs_router, pilot_router
 from app.settings import settings
 
 
@@ -20,3 +20,4 @@ def get_application():
 
 app = get_application()
 app.include_router(pilot_router)
+app.include_router(jobs_router)

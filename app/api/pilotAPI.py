@@ -1,18 +1,19 @@
 from bson import ObjectId
 from fastapi import APIRouter, Response, status
 
+from app.celery_worker import create_task
 from app.middleware import create_pilot, delete_pilot, read_pilot, update_pilot
 from app.model.pilot import Pilot
 from app.schema.pilot import CreatePilotOutput, PatchPilot
 
 pilot_router = APIRouter(
-    prefix="/pilot",
+    prefix="/pilots",
     tags=["pilot"],
     responses={404: {"description": "Not Found"}},
 )
 
 
-@pilot_router.post("/", response_model=CreatePilotOutput)
+@pilot_router.post("", response_model=CreatePilotOutput)
 async def create_pilot_view(pilot : Pilot) -> CreatePilotOutput:
     inserted_pilot_id = await create_pilot(pilot=pilot)
     return CreatePilotOutput(inserted_id=inserted_pilot_id)
@@ -38,3 +39,9 @@ async def patch_pilot_view(id : str, updated_pilot : PatchPilot) -> Pilot | Resp
 async def delete_pilot_view(id : str) -> Response:
     await delete_pilot(object_id=ObjectId(id))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@pilot_router.get("/jobs/long-job")
+async def long_pilot_job() -> Response:
+    create_task.delay(10, 5, 5)
+    return Response(content="Job Created", status_code=status.HTTP_201_CREATED)

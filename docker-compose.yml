@@ -7,6 +7,8 @@ services:
       - .env
     ports:
       - "8001:8000"
+    volumes:
+      - .:/backend
     depends_on:
       - mongodb
 
@@ -20,6 +22,47 @@ services:
     volumes:
       - dbdata6:/data/db
 
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis.conf
+    command: [redis-server, /usr/local/etc/redis.conf]
+
+
+  celery_worker:
+    container_name: celery_worker
+    build: .
+    command: celery -A celery_worker.celery worker --loglevel=info
+    volumes:
+      - .:/backend
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - backend
+      - redis
+
+  flower:
+    container_name: flower
+    build: .
+    command: celery -A celery_worker.celery flower --port=5555
+    ports:
+      - 5556:5555
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS}
+      - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+      - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+    depends_on:
+      - backend
+      - redis
+      - celery_worker
 
 volumes:
   dbdata6:
